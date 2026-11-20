@@ -15,7 +15,17 @@ header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16
 .logo{height:clamp(26px,3vw,44px);width:auto;opacity:.95;justify-self:start}
 h1{margin:0;text-align:center;font-size:clamp(18px,2.1vw,30px);font-weight:600;letter-spacing:.01em;color:#fff}
 h1 b{font-weight:600;color:var(--amber)}
-main{position:relative;display:grid;grid-template-columns:var(--boardw,70%) var(--sidew,28%);gap:22px;min-height:0;align-items:start;justify-content:center}
+main{position:relative;display:grid;grid-template-columns:var(--leftw,150px) var(--boardw,70%) var(--sidew,28%);gap:22px;min-height:0;align-items:start;justify-content:center}
+/* 왼쪽 열 (11/20): 아래쪽에 반짝이는 3D VISUALIZE 단추 — 누르면 아래 3D 뷰어로 */
+.lcol{align-self:start;height:var(--lcolh,100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;min-height:0;padding-bottom:2px}
+.go3d{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#1a1405;background:var(--yellow);border-radius:10px;padding:clamp(12px,1.6vh,20px) 8px;
+text-align:center;line-height:1.1;letter-spacing:.06em;animation:blink 1.3s ease-in-out infinite;will-change:box-shadow,transform}
+.go3d b{font-size:clamp(20px,1.9vw,30px);font-weight:800}
+.go3d span{font-size:clamp(11px,1vw,14px);font-weight:700}
+.go3d i{font-style:normal;font-size:clamp(14px,1.3vw,20px);margin-top:4px;animation:bob 1.3s ease-in-out infinite}
+.go3d:hover{animation-play-state:paused;background:#ffd97a;box-shadow:0 0 34px 6px rgba(255,205,90,.7)}
+@keyframes blink{0%,100%{background:#f2c14e;box-shadow:0 0 6px 0 rgba(255,205,90,.35);transform:scale(1)}50%{background:#ffe08a;box-shadow:0 0 34px 8px rgba(255,214,110,.85);transform:scale(1.04)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 .board{display:grid;grid-template-columns:var(--lw,118px) repeat(3,var(--pw,1fr));grid-template-rows:var(--hh,30px) repeat(3,var(--ph,1fr));gap:var(--gap,8px);min-height:0}
 .ch{align-self:end;padding:0 2px 3px;border-bottom:1px solid var(--line);color:#dbe5f7;font-size:clamp(12px,1.05vw,16px);font-weight:600;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ch small{display:block;font-weight:400;font-size:.72em;color:var(--muted);letter-spacing:.02em}
@@ -111,20 +121,20 @@ a.down:hover{background:rgba(242,193,78,.12)}
 .vc .im .ov button:hover{border-color:var(--yellow)}
 .vc .im .ov button.on{background:var(--yellow);color:#1a1405;border-color:transparent;font-weight:700}
 .vc .im .hint2{position:absolute;left:10px;bottom:8px;z-index:3;pointer-events:none;color:#3b4a6e;font-size:11px;letter-spacing:.02em;background:rgba(255,255,255,.78);padding:3px 8px;border-radius:4px}
-.stage.cmp .vc:not(:first-child) .ov,.stage.cmp .vc:not(:first-child) .hint2{display:none}
-.stage{width:min(100%,1600px);flex:1;min-height:0;display:grid;gap:14px;grid-template-columns:1fr;align-content:start;justify-items:center}
-.stage.cmp{grid-template-columns:repeat(3,1fr);width:100%}
+.vc:not(:first-child) .ov,.vc:not(:first-child) .hint2{display:none}
+/* 항상 세 칸 (LEVEL 1·2·3 나란히, 카메라 공유). 칸 높이는 fit3d 가 화면에 맞춤 (--vimh) */
+.stage{width:100%;flex:1;min-height:0;display:grid;gap:14px;grid-template-columns:repeat(3,1fr);align-content:start;justify-items:center}
 .vc{min-width:0;width:100%}
-.stage:not(.cmp) .vc{width:min(100%,calc(var(--vimh,500px)*1.6))}
-.vc .im{position:relative;width:100%;aspect-ratio:8/5;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(120,170,255,.3),0 14px 50px rgba(0,0,0,.45)}
+.vc .im{position:relative;width:100%;height:var(--vimh,500px);border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(120,170,255,.3),0 14px 50px rgba(0,0,0,.45)}
+.vc .im .tag{position:absolute;left:12px;top:10px;z-index:3;font-weight:800;font-size:clamp(17px,1.45vw,21px);letter-spacing:.03em;color:var(--lc);background:rgba(10,18,40,.8);padding:6px 14px;border-radius:7px;border-left:4px solid var(--lc)}
+.vc .im .tag small{font-weight:700;font-size:.82em;color:#fff;margin-left:6px}
 .vc .im canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block;cursor:grab;touch-action:none}
 .vc .im canvas:active{cursor:grabbing}
 .vc .im.ring{box-shadow:0 0 0 2px var(--lc),0 0 26px 0 var(--lc)}
-.vc .cap{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:clamp(11px,1vw,14px);color:#dbe5f7}
+.vc .cap{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:clamp(12px,1.05vw,15px);color:#dbe5f7}
 .vc .cap b{color:var(--lc);letter-spacing:.03em}
 .vc .cap span{color:var(--muted)}
-.stage.cmp .vc .im{aspect-ratio:8/5}
-@media (max-width:900px){.stage.cmp{grid-template-columns:1fr}}
+@media (max-width:900px){.stage{grid-template-columns:1fr}}
 </style></head><body>
 <div class="app" id="app">
 <header>
@@ -133,20 +143,19 @@ a.down:hover{background:rgba(242,193,78,.12)}
  <div></div>
 </header>
 <main>
+ <div class="lcol"><a class="go3d" href="#3d" id="go3d"><b>3D</b><span>VISUALIZE</span><i>▼</i></a></div>
  <div class="board" id="board"></div>
  <div class="side" id="side"></div>
  <div class="final" id="final"></div>
 </main>
 <footer><button id="play" class="primary">멈춤</button><button id="prev">◀</button><button id="next">▶</button>
 <input id="rng" type="range" min="0" max="0" value="0"><span id="lab" class="lab"></span>
-<span class="hint">행 = 초기 격자 수준 · 열 = 회차마다 바뀌는 격자·유동장·압력 분포 · 오른쪽 = 각 수준의 AMR 사이클 (수렴하면 멈춤)</span>
-<a class="down" href="#3d" id="godown">▼ 3D 날개 격자 보기</a></footer>
+<span class="hint">행 = 초기 격자 수준 · 열 = 회차마다 바뀌는 격자·유동장·압력 분포 · 오른쪽 = 각 수준의 AMR 사이클 (수렴하면 멈춤)</span></footer>
 </div>
 <section class="viewer" id="3d">
  <h2>3D <b>wing surface mesh</b> · ONERA M6</h2>
- <p class="vsub">회차마다 바뀌는 날개 표면 격자를 3차원으로 봅니다 (위 데모와 같은 실행). 수준 1 → 2 → 3 → 세 수준 나란히 순서로 자동재생되며, 수준을 누르면 그 수준부터 다시 봅니다.</p>
+ <p class="vsub">회차마다 바뀌는 날개 표면 격자를 Level 1 · 2 · 3 나란히 3차원으로 봅니다 (위 데모와 같은 실행, 카메라 공유). 회차가 자동으로 넘어가며 각 수준은 제 마지막 회차에서 멈춥니다.</p>
  <div class="ctl">
-  <div class="grp" id="lvgrp"><span class="k">Level</span></div>
   <div class="grp"><span class="k">Cycle</span><button id="vplay" class="primary">⏸ 자동재생 중</button><input id="krng" type="range" min="0" max="1" value="0"><span class="vlab" id="vlab"></span></div>
   <a class="down" href="#app" id="goup">▲ 데모 다시 보기</a>
  </div>
@@ -179,9 +188,9 @@ function finishTop(){ended=true;playing=false;tPause=TOTAL-0.001;play.textConten
 function state(L,T){const K=L.n-1;if(T>=L.total)return {k:K,f:1};let k=0;while(k<K&&T>=L.cum[k+1])k++;return {k:k,f:(T-L.cum[k])/L.durs[k]}}
 /* 크기: 행 높이로 칸 크기 결정 (8:5). 오른쪽 패널 폭은 화면의 22 % (270~340 px). 결론 장면 그림 폭 --fw 는 행 3개가 들어가게 */
 function fit(){const main=document.querySelector('main'),gap=8,lw=Math.max(96,Math.min(130,innerWidth*0.07)),hh=Math.max(30,Math.min(44,innerHeight*0.045));
- const W=main.clientWidth,H=main.clientHeight;let sidew=Math.max(270,Math.min(340,W*0.22));let bw=W-sidew-22;let pw=(bw-lw-3*gap)/3,ph=pw/1.6;
+ const W=main.clientWidth,H=main.clientHeight;let sidew=Math.max(270,Math.min(340,W*0.22));const leftw=Math.max(120,Math.min(170,W*0.085));let bw=W-leftw-sidew-44;let pw=(bw-lw-3*gap)/3,ph=pw/1.6;
  const maxH=H-2*gap-hh;if(3*ph>maxH){ph=maxH/3;pw=ph*1.6;bw=lw+3*pw+3*gap}
- const s=document.documentElement.style;s.setProperty('--boardw',bw+'px');s.setProperty('--sidew',sidew+'px');s.setProperty('--lw',lw+'px');s.setProperty('--pw',pw+'px');s.setProperty('--ph',ph+'px');s.setProperty('--hh',hh+'px');s.setProperty('--gap',gap+'px');
+ const s=document.documentElement.style;s.setProperty('--leftw',leftw+'px');s.setProperty('--lcolh',(hh+3*ph+3*gap)+'px');s.setProperty('--boardw',bw+'px');s.setProperty('--sidew',sidew+'px');s.setProperty('--lw',lw+'px');s.setProperty('--pw',pw+'px');s.setProperty('--ph',ph+'px');s.setProperty('--hh',hh+'px');s.setProperty('--gap',gap+'px');
  const fh=Math.max(70,(H-150)/3.35),fw=Math.min(fh*1.6,(W-320)/4);s.setProperty('--fw',fw+'px')}
 addEventListener('resize',fit);
 /* ---- 사이클 패널 (viewBox 320×240) */
@@ -243,19 +252,14 @@ rng.oninput=()=>{setPlay(false);seek(rng.value/10)};
 /* ---- 3D 뷰어 (WebGL · three.js 내장): 회차별 날개 표면 삼각형을 그대로 그림.
    자동재생 = 수준 1 → 2 → 3 의 회차 순서, 그 뒤 세 수준 나란히; 가만히 두면 천천히 자동 회전.
    마우스 드래그 회전, 휠 확대, 더블클릭 시점 초기화 (시점 단추는 캔버스 안 오른쪽 위, 나란히 보기에서는 첫 칸에만) */
-const V={l:0,k:0,cmp:false,wire:true,auto:true,rot:true};const stage=document.getElementById('stage'),krng=document.getElementById('krng'),vlab=document.getElementById('vlab'),lvgrp=document.getElementById('lvgrp'),vplay=document.getElementById('vplay');
+const V={k:0,wire:true,auto:true,rot:false};const stage=document.getElementById('stage'),krng=document.getElementById('krng'),vlab=document.getElementById('vlab'),vplay=document.getElementById('vplay');
 const ONLY3D=/only3d/.test(location.hash||'');
 function botActive(){return ONLY3D||scrollY>innerHeight*0.5}
-const lvbs=D.levels.map((L,l)=>{const b=document.createElement('button');b.className='lvb';b.style.setProperty('--lc',COL[l]);b.innerHTML=L.name+'<small>'+L.sub+'</small>';b.onclick=()=>jump(l,false);lvgrp.append(b);return b});
-const cmpb=document.createElement('button');cmpb.className='lvb';cmpb.style.setProperty('--lc','#dbe5f7');cmpb.textContent='세 수준 나란히';cmpb.onclick=()=>jump(0,true);lvgrp.append(cmpb);
-/* 자동재생 순서: 수준마다 회차 0 (2.5 s) → 중간 (0.9 s) → 마지막 (3.5 s); 세 수준 뒤에 나란히 (회차 0 → 최대, 마지막 5 s) → 반복 */
-const KM=Math.max(...D.levels.map(x=>x.n-1)),SEQ=[];
-D.levels.forEach((L,l)=>{for(let k=0;k<L.n;k++)SEQ.push({l:l,k:k,cmp:false,d:k===0?2.5:k===L.n-1?3.5:0.9})});
-for(let k=0;k<=KM;k++)SEQ.push({l:0,k:k,cmp:true,d:k===0?2.5:k===KM?5:0.9});
-let si=0,sAt=performance.now();
-function jump(l,cmp){si=SEQ.findIndex(s=>s.cmp===cmp&&(cmp||s.l===l));sAt=performance.now();V.l=SEQ[si].l;V.k=SEQ[si].k;V.cmp=cmp;draw()}
-function setAuto(a){V.auto=a;if(a){si=Math.max(0,SEQ.findIndex(s=>s.cmp===V.cmp&&(V.cmp||s.l===V.l)&&s.k===V.k));sAt=performance.now()}vplay.textContent=a?'⏸ 자동재생 중':'▶ 자동재생';vplay.classList.toggle('primary',a)}
-function tick3d(){if(!V.auto||!botActive()||!views.length)return;const t=performance.now();if(t-sAt<SEQ[si].d*1000)return;si=(si+1)%SEQ.length;sAt=t;const s=SEQ[si];V.l=s.l;V.k=s.k;V.cmp=s.cmp;draw()}
+/* 자동재생: 세 수준 나란히 회차 0 (2.5 s) → 중간 (0.9 s) → 최대 회차 (5 s) → 반복. 각 수준은 제 마지막 회차에서 멈춰 있음 */
+const KM=Math.max(...D.levels.map(x=>x.n-1)),DUR=k=>k===0?2.5:k===KM?5:0.9;
+let sAt=performance.now();
+function setAuto(a){V.auto=a;sAt=performance.now();vplay.textContent=a?'⏸ 자동재생 중':'▶ 자동재생';vplay.classList.toggle('primary',a)}
+function tick3d(){if(!V.auto||!botActive()||!views.length)return;const t=performance.now();if(t-sAt<DUR(V.k)*1000)return;V.k=(V.k+1)%(KM+1);sAt=t;draw()}
 const GEO={};
 function b64buf(t){const b=atob(t),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u.buffer}
 function geom(l,k){const key=l+'_'+k;if(GEO[key])return GEO[key];const buf=b64buf(D.levels[l].wing[k]),dv=new DataView(buf);
@@ -264,9 +268,9 @@ function geom(l,k){const key=l+'_'+k;if(GEO[key])return GEO[key];const buf=b64bu
  const off=32+np*6,idx=np<=65535?new Uint16Array(buf.slice(off,off+nt*6)):new Uint32Array(buf.slice(off,off+nt*12));
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setIndex(new THREE.BufferAttribute(idx,1));g.computeVertexNormals();
  return GEO[key]={g:g,w:new THREE.WireframeGeometry(g),nt:nt,bmin:bmin,bmax:bmax}}
-/* 카메라는 모든 회차에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준, pvpython 그림과 같은 az 120 el 58 */
+/* 카메라는 모든 회차·수준에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준. 기본 = iso view (앞·바깥·위, az 135 el 35.26), 회전 없음 */
 const G0=geom(0,0),CEN=new THREE.Vector3((G0.bmin[0]+G0.bmax[0])/2,(G0.bmin[1]+G0.bmax[1])/2,(G0.bmin[2]+G0.bmax[2])/2),SPAN=G0.bmax[1]-G0.bmin[1];
-const ORB0={az:120,el:58,dist:1.5*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
+const ORB0={az:135,el:35.26,dist:2.45*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
 const HAS_GL=(()=>{try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}})();
 let views=[];
 function mkview(card){const cv=card.querySelector('canvas');const r=new THREE.WebGLRenderer({canvas:cv,antialias:true});r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.setClearColor(0xffffff,1);
@@ -283,7 +287,8 @@ function mkview(card){const cv=card.querySelector('canvas');const r=new THREE.We
  cv.addEventListener('dblclick',()=>{orb={...ORB0};lastTouch=performance.now();dirty=true});
  return v}
 function setgeo(v,l,k){if(v.l===l&&v.k===k)return;const g=geom(l,k);v.mesh.geometry=g.g;v.wire.geometry=g.w;v.wire.material.opacity=g.nt>20000?0.42:g.nt>5000?0.6:0.85;v.l=l;v.k=k;dirty=true}
-function fit3d(){const st=stage.getBoundingClientRect(),sec=document.getElementById('3d').getBoundingClientRect();const room=innerHeight-(st.top-sec.top)-44;document.documentElement.style.setProperty('--vimh',Math.max(160,room)+'px')}
+function fit3d(){const st=stage.getBoundingClientRect(),sec=document.getElementById('3d').getBoundingClientRect();const room=innerHeight-(st.top-sec.top)-52,colw=(stage.clientWidth-28)/3;
+ document.documentElement.style.setProperty('--vimh',Math.max(160,Math.min(room,colw*1.05))+'px')}   /* 세 칸: 폭에 맞춰 거의 정사각, 화면 높이를 넘지 않게 */
 addEventListener('resize',fit3d);
 function render3d(){if(!views.length)return;const t=performance.now(),dt=Math.min(0.1,(t-lastF)/1000);lastF=t;
  if(V.rot&&botActive()&&t-lastTouch>2500&&!views.some(v=>v.drag)){orb.az-=7*dt;dirty=true}   /* 자동 회전: 7°/s, 조작 뒤 2.5 s 쉬고 다시 */
@@ -291,18 +296,16 @@ function render3d(){if(!views.length)return;const t=performance.now(),dt=Math.mi
  if(!any)return;dirty=false;const a=orb.az*Math.PI/180,e=orb.el*Math.PI/180;
  views.forEach(v=>{v.wire.visible=V.wire;v.cam.position.set(CEN.x+orb.dist*Math.cos(e)*Math.cos(a),CEN.y+orb.dist*Math.cos(e)*Math.sin(a),CEN.z+orb.dist*Math.sin(e));v.cam.lookAt(CEN);v.r.render(v.sc,v.cam)})}
 const OV='<div class="ov"><button data-a="wire">격자선</button><button data-a="rot">자동 회전</button><button data-a="reset">시점 초기화</button></div><div class="hint2">드래그 회전 · 휠 확대 · 더블클릭 시점 초기화</div>';
-const vcard=(l,k)=>{const L=D.levels[l];return '<div class="vc" style="--lc:'+COL[l]+'"><div class="im'+(k===L.n-1?' ring':'')+'">'+(HAS_GL?'<canvas></canvas>'+OV:'<p style="color:#334;padding:20px">WebGL 을 쓸 수 없는 브라우저입니다</p>')+'</div>'+
- '<div class="cap"><b>'+L.name+' · '+L.sub+'</b><span>cycle '+k+' / '+(L.n-1)+(k===L.n-1?' · converged':k===0?' · initial':'')+' · '+L.ne[k].toLocaleString()+' elements · '+geom(l,k).nt.toLocaleString()+' surface triangles</span></div></div>'};
-function draw(){const L=D.levels[V.l],K=V.cmp?Math.max(...D.levels.map(x=>x.n-1)):L.n-1;V.k=Math.max(0,Math.min(K,V.k));
- krng.max=K;krng.value=V.k;
- const want=V.cmp?D.levels.map((x,l)=>[l,Math.min(V.k,x.n-1)]):[[V.l,V.k]];
- if(views.length!==want.length){views.forEach(v=>v.r.dispose());stage.classList.toggle('cmp',V.cmp);stage.innerHTML=want.map(([l,k])=>vcard(l,k)).join('');views=HAS_GL?[...stage.querySelectorAll('.vc')].map(mkview):[]}
- else{[...stage.querySelectorAll('.vc')].forEach((c,i)=>{const [l,k]=want[i],L2=D.levels[l];c.style.setProperty('--lc',COL[l]);c.querySelector('.im').classList.toggle('ring',k===L2.n-1);
-  c.querySelector('.cap').innerHTML='<b>'+L2.name+' · '+L2.sub+'</b><span>cycle '+k+' / '+(L2.n-1)+(k===L2.n-1?' · converged':k===0?' · initial':'')+' · '+L2.ne[k].toLocaleString()+' elements · '+geom(l,k).nt.toLocaleString()+' surface triangles</span>'})}
+const capTxt=(L,k)=>'<b>'+(k===L.n-1?'converged':k===0?'initial':'refining')+'</b><span>cycle '+k+' / '+(L.n-1)+' · '+L.ne[k].toLocaleString()+' elements · '+geom(D.levels.indexOf(L),k).nt.toLocaleString()+' surface triangles</span>';
+const vcard=(l,k)=>{const L=D.levels[l];return '<div class="vc" style="--lc:'+COL[l]+'"><div class="im'+(k===L.n-1?' ring':'')+'">'+(HAS_GL?'<canvas></canvas>'+OV:'<p style="color:#334;padding:20px">WebGL 을 쓸 수 없는 브라우저입니다</p>')+
+ '<div class="tag">'+L.name+'<small>'+L.sub+'</small></div></div><div class="cap">'+capTxt(L,k)+'</div></div>'};
+function draw(){V.k=Math.max(0,Math.min(KM,V.k));krng.max=KM;krng.value=V.k;
+ const want=D.levels.map((x,l)=>[l,Math.min(V.k,x.n-1)]);   /* 항상 세 칸, 각 수준은 제 마지막 회차에서 멈춤 */
+ if(views.length!==want.length){views.forEach(v=>v.r.dispose());stage.innerHTML=want.map(([l,k])=>vcard(l,k)).join('');views=HAS_GL?[...stage.querySelectorAll('.vc')].map(mkview):[]}
+ else{[...stage.querySelectorAll('.vc')].forEach((c,i)=>{const [l,k]=want[i],L2=D.levels[l];c.querySelector('.im').classList.toggle('ring',k===L2.n-1);c.querySelector('.cap').innerHTML=capTxt(L2,k)})}
  views.forEach((v,i)=>setgeo(v,want[i][0],want[i][1]));
- lvbs.forEach((b,l)=>b.classList.toggle('on',!V.cmp&&l===V.l));cmpb.classList.toggle('on',V.cmp);
  stage.querySelectorAll('[data-a=wire]').forEach(b=>b.classList.toggle('on',V.wire));stage.querySelectorAll('[data-a=rot]').forEach(b=>b.classList.toggle('on',V.rot));
- vlab.textContent=V.cmp?'cycle '+V.k+' / '+K:L.name+' · cycle '+V.k+' / '+K;dirty=true}
+ vlab.textContent='cycle '+V.k+' / '+KM;dirty=true}
 krng.oninput=()=>{setAuto(false);V.k=+krng.value;draw()};vplay.onclick=()=>setAuto(!V.auto);
 stage.addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;const a=b.dataset.a;   /* 캔버스 안 시점 단추 */
  if(a==='wire')V.wire=!V.wire;else if(a==='rot'){V.rot=!V.rot;lastTouch=0}else orb={...ORB0};dirty=true;draw()});
@@ -322,6 +325,6 @@ fit();draw();fit3d();requestAnimationFrame(anim);
 const mt=/t=([\d.]+)/.exec(location.hash||'');if(mt){setPlay(false);seek(parseFloat(mt[1]))}
 if(/still/.test(location.hash)){const st=document.createElement('style');st.textContent='*{transition:none!important;animation:none!important}';document.head.append(st);setAuto(false);V.rot=false;draw()}
 if(ONLY3D){document.getElementById('app').style.display='none'}
-if(/^#3d/.test(location.hash)){if(/cmp/.test(location.hash)){setAuto(false);V.cmp=true;V.k=1e9;draw()}setTimeout(()=>document.getElementById('3d').scrollIntoView(),50)}   /* #3d,cmp → 세 수준 나란히, 수렴 회차 */
+if(/^#3d/.test(location.hash)){if(/cmp/.test(location.hash)){setAuto(false);V.k=1e9;draw()}setTimeout(()=>document.getElementById('3d').scrollIntoView(),50)}   /* #3d,cmp → 수렴 회차에서 멈춘 채 */
 onScroll();
 </script></body></html>
