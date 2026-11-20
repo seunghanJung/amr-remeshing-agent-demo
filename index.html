@@ -267,9 +267,9 @@ function geom(l,k){const key=l+'_'+k;if(GEO[key])return GEO[key];const buf=b64bu
  const off=32+np*6,idx=np<=65535?new Uint16Array(buf.slice(off,off+nt*6)):new Uint32Array(buf.slice(off,off+nt*12));
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setIndex(new THREE.BufferAttribute(idx,1));g.computeVertexNormals();
  return GEO[key]={g:g,w:new THREE.WireframeGeometry(g),nt:nt,bmin:bmin,bmax:bmax}}
-/* 카메라는 모든 회차·수준에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준. 기본 = iso view (앞·바깥·위, az 135 el 35.26), 회전 없음 */
+/* 카메라는 모든 회차·수준에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준. 기본 = top view (평면도, 앞전이 위; el 89.5 로 lookAt 특이점 회피), 회전 없음 */
 const G0=geom(0,0),CEN=new THREE.Vector3((G0.bmin[0]+G0.bmax[0])/2,(G0.bmin[1]+G0.bmax[1])/2,(G0.bmin[2]+G0.bmax[2])/2),SPAN=G0.bmax[1]-G0.bmin[1];
-const ORB0={az:135,el:35.26,dist:2.45*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
+const ORB0={az:180,el:89.5,dist:2.3*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
 const HAS_GL=(()=>{try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}})();
 let views=[];
 function mkview(card){const cv=card.querySelector('canvas');const r=new THREE.WebGLRenderer({canvas:cv,antialias:true});r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.setClearColor(0xffffff,1);
