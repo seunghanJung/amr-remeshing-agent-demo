@@ -2,11 +2,12 @@
 <title>AMR-based CFD Remeshing Agent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" rel="stylesheet">
 <style>
-/* 11/20 흰 배경판: 영문 Inter (없으면 Segoe UI), 한글 굴림 */
+/* 11/20 흰 배경판: 영문 Inter (없으면 Segoe UI), 한글 Pretendard (없으면 맑은 고딕) */
 :root{--bg0:#ffffff;--bg1:#f7f9fc;--bg2:#eef2f8;--fg:#141c30;--muted:#64718f;--line:rgba(30,50,90,.18);
 --yellow:#f2c14e;--gold:#b8860b;--amber:#e08a00;--blue:#2f6fe0;--steel:#c9d3e6;--steel2:#dfe5f0;--l1:#2f7df6;--l2:#f08c1e;--l3:#1fb77a;
---font:"Inter","Segoe UI Variable Text","Segoe UI",Gulim,"굴림",sans-serif}
+--font:"Inter","Pretendard","Segoe UI Variable Text","Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;color:var(--fg);font:14px/1.4 var(--font);overflow-x:hidden;
 background:radial-gradient(1200px 700px at 18% 0%,var(--bg2) 0%,var(--bg1) 40%,var(--bg0) 100%) fixed}
@@ -272,9 +273,9 @@ function geom(l,k){const key=l+'_'+k;if(GEO[key])return GEO[key];const buf=b64bu
  const off=32+np*6,idx=np<=65535?new Uint16Array(buf.slice(off,off+nt*6)):new Uint32Array(buf.slice(off,off+nt*12));
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setIndex(new THREE.BufferAttribute(idx,1));g.computeVertexNormals();
  return GEO[key]={g:g,w:new THREE.WireframeGeometry(g),nt:nt,bmin:bmin,bmax:bmax}}
-/* 카메라는 모든 회차·수준에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준. 기본 = top view 를 시계 방향 90° 돌린 평면도 (뿌리 위, 끝 아래, 앞전 오른쪽; el 89.5 로 lookAt 특이점 회피), 회전 없음 */
+/* 카메라는 모든 회차·수준에 같은 자리 (회차를 넘겨도 시점이 안 바뀌게): LEVEL 1 회차 0 의 bbox 기준. 기본 = 평면도, 뿌리가 아래·끝이 위·앞전 왼쪽 (el 89.5 로 lookAt 특이점 회피), 회전 없음 */
 const G0=geom(0,0),CEN=new THREE.Vector3((G0.bmin[0]+G0.bmax[0])/2,(G0.bmin[1]+G0.bmax[1])/2,(G0.bmin[2]+G0.bmax[2])/2),SPAN=G0.bmax[1]-G0.bmin[1];
-const ORB0={az:90,el:89.5,dist:2.3*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
+const ORB0={az:270,el:89.5,dist:2.3*SPAN};let orb={...ORB0},dirty=true,lastTouch=0,lastF=performance.now();
 const HAS_GL=(()=>{try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl')||c.getContext('experimental-webgl')))}catch(e){return false}})();
 let views=[];
 function mkview(card){const cv=card.querySelector('canvas');const r=new THREE.WebGLRenderer({canvas:cv,antialias:true});r.setPixelRatio(Math.min(devicePixelRatio||1,2));r.setClearColor(0xffffff,1);
