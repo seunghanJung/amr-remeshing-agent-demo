@@ -22,7 +22,7 @@ h1{margin:0;text-align:center;font-size:clamp(18px,2.1vw,30px);font-weight:700;l
 h1 b{font-weight:700;color:var(--amber)}
 main{position:relative;display:grid;grid-template-columns:var(--leftw,150px) var(--boardw,70%) var(--sidew,28%);gap:22px;min-height:0;align-items:start;justify-content:center}
 /* 왼쪽 열 (11/20): 아래쪽에 반짝이는 3D VISUALIZE 단추 — 누르면 아래 3D 뷰어로 */
-.lcol{position:relative;z-index:11;align-self:start;height:var(--lcolh,100%);display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;min-height:0;padding-bottom:2px}
+.lcol{position:relative;z-index:11;align-self:start;height:var(--lcolh,100%);display:flex;flex-direction:column;justify-content:center;align-items:stretch;min-height:0;padding-bottom:2px}   /* 3D 단추는 왼쪽 열 세로 가운데 */
 .go3d{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#1a1405;background:var(--yellow);border-radius:10px;padding:clamp(12px,1.6vh,20px) 8px;
 text-align:center;line-height:1.1;letter-spacing:.06em;animation:blink 1.3s ease-in-out infinite;will-change:box-shadow,transform}
 .go3d b{font-size:clamp(20px,1.9vw,30px);font-weight:800}
@@ -132,6 +132,9 @@ a.down:hover{background:#fff8e6}
 .stage{width:100%;flex:none;min-height:0;display:grid;gap:14px;grid-template-columns:repeat(3,1fr);align-content:start;justify-items:center}
 /* 3D 칸 아래: 수준별 AMR 사이클 링 (위 데모 오른쪽 패널과 같은 SVG, 높이 --ringh 는 fit3d 가 정함) */
 .rings{width:100%;height:var(--ringh,200px);flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+/* 아래 링은 간결형: 돌아가는 링 + 회차 숫자만 (작은 글씨는 안 보여서 뺌) */
+.cyc.compact .lvn,.cyc.compact .lvs,.cyc.compact .stg,.cyc.compact .rdk,.cyc.compact .rdb,.cyc.compact .st,.cyc.compact .fin1,.cyc.compact .fin2,.cyc.compact .ne{display:none}
+.cyc.compact .rdn{font-size:36px}
 .vc .im .conv{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:3;opacity:0;transition:opacity .5s;white-space:nowrap;
 font-weight:800;font-size:clamp(16px,1.4vw,22px);letter-spacing:.06em;color:#fff;background:var(--lc);padding:7px 20px;border-radius:8px;box-shadow:0 4px 16px rgba(20,40,90,.25)}
 .vc.done .im .conv{opacity:1}
@@ -225,7 +228,9 @@ function cycSvg(L,l,p){return '<svg viewBox="0 0 320 240" preserveAspectRatio="x
   '<text class="fin1" x="232" y="100" text-anchor="start">FINISHED</text><text class="fin2" x="232" y="122" text-anchor="start">'+(L.n-1)+' CYCLES</text>'+
   '<text class="rdk" x="232" y="158" text-anchor="start">MESH ELEMENT</text><text class="ne" id="'+p+'ne'+l+'" x="232" y="176" text-anchor="start">—</text>'+
   '</svg>'}
-function mkCyc(L,l,p){const d=document.createElement('div');d.className='cyc';d.style.setProperty('--lc',COL[l]);d.innerHTML=cycSvg(L,l,p);return d}
+function mkCyc(L,l,p){const d=document.createElement('div');d.className='cyc'+(p==='b'?' compact':'');d.style.setProperty('--lc',COL[l]);d.innerHTML=cycSvg(L,l,p);
+ if(p==='b'){const m=R+24;d.querySelector('svg').setAttribute('viewBox',(CX-m)+' '+(CY-m)+' '+2*m+' '+2*m)}   /* 간결형: 링 둘레만 보이게 정사각형 */
+ return d}
 const panels=D.levels.map((L,l)=>{const d=mkCyc(L,l,'');side.append(d);return d});
 /* 링 상태 갱신: k 회차, fh 바늘 위치(0..1), done 수렴, ex 판정 중, st 상태 글 */
 function updRing(p,l,L,k,fh,done,ex,st,panel){
@@ -269,8 +274,8 @@ rng.oninput=()=>{setPlay(false);seek(rng.value/10)};
 const V={k:0,wire:true,auto:true,rot:false};const stage=document.getElementById('stage'),krng=document.getElementById('krng'),vlab=document.getElementById('vlab'),vplay=document.getElementById('vplay');
 const ONLY3D=/only3d/.test(location.hash||'');
 function botActive(){return ONLY3D||scrollY>innerHeight*0.5}
-/* 자동재생: 세 수준 나란히 회차 0 (2.5 s) → 중간 (0.9 s) → 최대 회차 (5 s) → 반복. 각 수준은 제 마지막 회차에서 멈춰 있음 */
-const KM=Math.max(...D.levels.map(x=>x.n-1)),DUR=k=>k===0?2.5:k===KM?5:0.9;
+/* 자동재생 (1.25 배속): 세 수준 나란히 회차 0 (2 s) → 중간 (0.72 s) → 최대 회차 (4 s) → 반복. 각 수준은 제 마지막 회차에서 멈춰 있음 */
+const SPD=1.25,KM=Math.max(...D.levels.map(x=>x.n-1)),DUR=k=>(k===0?2.5:k===KM?5:0.9)/SPD;   /* 1.25 배속 */
 let sAt=performance.now(),pf=0;   /* sAt = 현재 회차 시작 시각, pf = 멈췄을 때의 회차 내 진행도 */
 function frac3d(){return V.auto?Math.min(1,(performance.now()-sAt)/(DUR(V.k)*1000)):pf}
 function setAuto(a){if(!a)pf=frac3d();V.auto=a;if(a)sAt=performance.now()-pf*DUR(V.k)*1000;vplay.textContent=a?'⏸ 자동재생 중':'▶ 자동재생';vplay.classList.toggle('primary',a)}
